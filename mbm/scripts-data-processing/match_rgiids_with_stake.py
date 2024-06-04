@@ -29,7 +29,7 @@ for icecap in glob.glob(file_dir_in + 'stake-measurements-merged/*.csv'):
     # joined_gdf = joined_df.to_crs(epsg=4326)
 
     # only keep the columns of the original df and the RGIId
-    columns_to_keep = list(df.columns.values)
+    columns_to_keep = df.columns.values.tolist()
     columns_to_keep.append('RGIId')
     joined_df = joined_df[columns_to_keep]
 

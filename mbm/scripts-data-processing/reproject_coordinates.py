@@ -3,8 +3,8 @@ from pyproj import CRS, Transformer
 
 # File directory and names
 file_dir = '.././data/'
-file_name_in = '../data/files/Iceland_Stake_Data_Merged.csv'
-file_name_out = '../data/files/Iceland_Stake_Data_Reprojected.csv'
+file_name_in = 'Iceland_Stake_Data_Merged.csv'
+file_name_out = 'Iceland_Stake_Data_Reprojected.csv'
 
 df = pd.read_csv(file_dir + file_name_in)
 

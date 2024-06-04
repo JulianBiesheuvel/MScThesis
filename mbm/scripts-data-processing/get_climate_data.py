@@ -5,8 +5,8 @@ import math
 
 # File directory and names
 file_dir = '.././data/'
-file_name_in = '../data/files/Iceland_Stake_Data_T_Attributes.csv'
-file_name_out = '../data/files/Iceland_Stake_Data_Climate.csv'
+file_name_in = 'files/Iceland_Stake_Data_T_Attributes.csv'
+file_name_out = 'files/Iceland_Stake_Data_Climate.csv'
 
 # Read stake data
 df = pd.read_csv(file_dir + file_name_in, index_col=False)
@@ -14,22 +14,31 @@ df = pd.read_csv(file_dir + file_name_in, index_col=False)
 # Open climate datasets
 # From https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land-monthly-means?tab=overview
 # From https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels-monthly-means?tab=overview
-with xr.open_dataset(file_dir + 'climate/ERA5_monthly_averaged_climate_data.nc') as ds_climate, \
-        xr.open_dataset(file_dir + 'climate/ERA5_geopotential_pressure.nc') as ds_geopotential:
+with xr.open_dataset(file_dir + 'climate/ERA5_monthly_averaged_climate_data.nc') as ds_c, \
+        xr.open_dataset(file_dir + 'climate/ERA5_geopotential_pressure.nc') as ds_g:
+
+    ds_climate = ds_c.load()
+    ds_geopotential = ds_g.load()
 
     # Convert geopotential height to geometric height and add to dataset
-    r_earth = 6378137.0
-    g = 9.80665
+    r_earth = 6367.47 * 10e3  # [m] (Grib1 radius)
+    g = 9.80665  # [m/s2]
     ds_geopotential_metric = ds_geopotential.assign(
-        altitude_climate=lambda ds_geo: r_earth * (ds_geopotential.z / g) / (r_earth - (ds_geopotential.z / g))
+        altitude_climate=lambda ds_geo: r_earth * ((ds_geopotential.z / g) / (r_earth - (ds_geopotential.z / g)))
     )
-
-    # Reduce expver dimension
-    ds_climate = ds_climate.reduce(np.nansum, 'expver')
 
     # Get latitude and longitude
     lat = ds_climate.latitude
     lon = ds_climate.longitude
+
+    # From: https://ecmwf-projects.github.io/copernicus-training-c3s/reanalysis-climatology.html
+    # Adjust longitude coordinates
+    ds_180 = ds_geopotential_metric.assign_coords(longitude=(((ds_geopotential_metric.longitude + 180) % 360) - 180)).sortby('longitude')
+
+    ds_geopotential_cropped = ds_180.sel(longitude=lon, latitude=lat, method='nearest')
+
+    # Reduce expver dimension
+    ds_climate = ds_climate.reduce(np.nansum, 'expver')
 
     # Create list of climate name variables and months combined
     climate_vars = list(ds_climate.keys())
@@ -65,7 +74,7 @@ with xr.open_dataset(file_dir + 'climate/ERA5_monthly_averaged_climate_data.nc')
             climate_per_point[idx, :] = climate_points.to_numpy().flatten(order='F')
 
             # Select altitude data
-            altitude_point = ds_geopotential_metric.sel(latitude=lat, longitude=lon, method='nearest')
+            altitude_point = ds_geopotential_cropped.sel(latitude=lat, longitude=lon, method='nearest')
             altitude_per_point[idx] = altitude_point.altitude_climate.values[0]
 
     # Create DataFrames from arrays

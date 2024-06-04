@@ -5,7 +5,7 @@ import pandas as pd
 # Define the path to the directory containing icecap stake data,
 # and a path for the directory the merged files are saved
 file_dir = '.././data/stake-measurements/'
-merged_dir = '../data/stake-measurements-merged/'
+merged_dir = '.././data/stake-measurements-merged/'
 
 icecaps = ['HOFS', 'LANG', 'VATN']
 
