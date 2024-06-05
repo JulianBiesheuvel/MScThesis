@@ -1,3 +1,11 @@
+"""
+This script merges all stake measurements, of all icecaps, into a single file.
+
+@Author: Julian Biesheuvel
+Email: j.p.biesheuvel@student.tudelft.nl
+Date Created: 04/06/2024
+"""
+
 import pandas as pd
 import glob
 

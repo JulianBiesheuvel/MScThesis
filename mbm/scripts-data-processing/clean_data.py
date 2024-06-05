@@ -1,22 +1,43 @@
+"""
+A script in the last step of the data-processing pipeline that cleans the data
+(i.e., remove redundant columns and records with NaN values).
+
+The script takes a list of columns as inputs, these are the columns that will be dropped.
+
+@Author: Julian Biesheuvel
+Email: j.p.biesheuvel@student.tudelft.nl
+Date Created: 04/06/2024
+"""
+
+import os
 import pandas as pd
+from argparse import ArgumentParser
+
+# Columns that are parsed as arguments and will be dropped from the dataset
+parser = ArgumentParser()
+parser.add_argument('-l', '--list', required=False, help='Provide the columns that are redundant', type=str, default=[])
+
+args = parser.parse_args()
+columns_to_drop = [item for item in args.list.split(',')]
 
 # Define the file directory and the input and output file names
-file_dir = '../data/files/'
-file_name_in = 'Iceland_Stake_Data_Climate.csv'
-file_name_out = 'Iceland_Stake_Data_Cleaned.csv'
+file_dir = '.././data/files/'
+file_name_in = 'region_stake_data_climate.csv'
+file_name_out = 'region_stake_data_cleaned.csv'
 
-df = pd.read_csv(file_dir + file_name_in)
+full_path = os.path.join(file_dir, file_name_in)
 
-# Drop records that do not have any climate variables or altitude
+# Check if the input file exists
+if not os.path.exists(full_path):
+    raise FileNotFoundError(f'{full_path} does not exist')
+
+df = pd.read_csv(full_path)
+
+# Drop records that do not have any geopotential height available
 df.dropna(subset=['altitude_climate'], inplace=True)
 
-# Drop redundant columns
-columns_to_drop = ['bw_floating_date', 'bs_floating_date', 'ba_floating_date', 'rhow', 'rhos', 'ims', 'nswe', 'dw', 'imw', 'ds']
+# Drop other redundant columns
+df.drop(columns=columns_to_drop, inplace=True, errors='ignore')
 
-for col in columns_to_drop:
-    if col in df.columns:
-        df.drop(columns=col, inplace=True)
+df.to_csv(os.path.join(file_dir, file_name_out), index=False)
 
-# Rename columns
-
-df.to_csv(file_dir + file_name_out, index=False)

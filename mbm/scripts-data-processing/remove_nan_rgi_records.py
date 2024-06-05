@@ -1,7 +1,20 @@
+"""
+This script removes all records missing RGIIDs, and saves them in a separate file.
+
+@Author: Julian Biesheuvel
+Email: j.p.biesheuvel@student.tudelft.nl
+Date Created: 04/06/2024
+"""
+
 import pandas as pd
+import os
 
 # File path for the stake data CSV file
 csv_file = '.././data/files/Iceland_Stake_Data_Reprojected.csv'
+
+# Check if the directory exists
+if not os.path.exists(csv_file):
+    raise FileNotFoundError(f'{csv_file} does not exist')
 
 df = pd.read_csv(csv_file)
 

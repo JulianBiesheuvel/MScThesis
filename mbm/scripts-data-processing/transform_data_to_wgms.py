@@ -1,3 +1,14 @@
+"""
+This script transforms the dataset to a WGMS file dataset format, with all the columns that are in the
+WGMS database. The dataset will be ready to be uploaded to the WGMS database. The WGMS ID will be assigned
+by WGMS. Depending on the data that is available for the stake measurements the columns are either copied,
+or left blank.
+
+@Author: Julian Biesheuvel
+Email: j.p.biesheuvel@student.tudelft.nl
+Date Created: 04/06/2024
+"""
+
 import pandas as pd
 import os.path
 
@@ -8,6 +19,10 @@ file_name_out = 'Iceland_Stake_WGMS.csv'
 
 # File path for Iceland Stake Data
 file_path = os.path.join(file_dir, file_name_in)
+
+# Check if the directory exists
+if not os.path.exists(file_path):
+    raise FileNotFoundError(f'{file_path} does not exist')
 
 # Read Iceland Stake Data into DataFrame
 df = pd.read_csv(file_path)
