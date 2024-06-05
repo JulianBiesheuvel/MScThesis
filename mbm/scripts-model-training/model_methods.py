@@ -1,3 +1,11 @@
+"""
+This script contains functions training the XGBoost model.
+
+@Author: Julian Biesheuvel
+Email: j.p.biesheuvel@student.tudelft.nl
+Date Created: 04/06/2024
+"""
+
 import xgboost as xgb
 import numpy as np
 import sklearn

@@ -1,6 +1,13 @@
+"""
+This script contains functions for plotting the results of the mode.
+
+@Author: Julian Biesheuvel
+Email: j.p.biesheuvel@student.tudelft.nl
+Date Created: 04/06/2024
+"""
+
 import matplotlib.pyplot as plt
 import seaborn as sns
-import numpy as np
 from scipy import stats
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error, root_mean_squared_error
 from sklearn.inspection import permutation_importance

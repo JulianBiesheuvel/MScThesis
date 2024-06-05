@@ -1,3 +1,12 @@
+"""
+This script contains functions for preparing data for machine learning models.
+
+@Author: Julian Biesheuvel
+Email: j.p.biesheuvel@student.tudelft.nl
+Date Created: 04/06/2024
+"""
+
+
 import numpy as np
 import pandas as pd
 import sklearn
