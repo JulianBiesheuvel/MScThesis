@@ -14,8 +14,8 @@ import os.path
 
 # File directory
 file_dir = '.././data/files/'
-file_name_in = 'Iceland_Stake_Data_Climate.csv'
-file_name_out = 'Iceland_Stake_WGMS.csv'
+file_name_in = 'region_stake_data_climate.csv'
+file_name_out = 'region_stake_wgms.csv'
 
 # File path for Iceland Stake Data
 file_path = os.path.join(file_dir, file_name_in)
@@ -27,7 +27,8 @@ if not os.path.exists(file_path):
 # Read Iceland Stake Data into DataFrame
 df = pd.read_csv(file_path)
 
-# Construct WGMS data dictionary
+# Construct WGMS data dictionary with the appropriate columns that are required for a WGMS dataset
+# Either copy the data from df to df_wgms by: COLUM_NAME: df['COLUMN_NAME'], or if not available: COLUMN_NAME: [None] * len(df)
 wgms_data = {
     'POLITICAL_UNIT': ['IS'] * len(df),
     'NAME': df['Name'],
